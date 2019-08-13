@@ -48,7 +48,7 @@ class NetUtil {
   NetUtil._shared();
 
   /// 属性声明
-  BaseOptions _baseOptions = BaseOptions(baseUrl: NetUtil.base_url);
+  final BaseOptions _baseOptions = BaseOptions(baseUrl: NetUtil.base_url);
 
   /// private method
   BaseOptions _baseOptionsMerge(
@@ -72,10 +72,10 @@ class NetUtil {
     }
   }
 
-  Future<Response> requestUrl(String url, String uri,
+  Future<Response> requestUrl(String baseUrl, String uri,
       {NetMethod method, Map<String, dynamic> queryParameters}) async {
     BaseOptions baseOptions = _baseOptions.merge(
-        baseUrl: url,
+        baseUrl: baseUrl,
         queryParameters: queryParameters,
         method: _method(method));
     Dio dio = Dio(baseOptions);

@@ -25,4 +25,7 @@ class Song {
       this.title,
       this.pic_big,
       this.album_title);
+
+  factory Song.fromJson(Map<String, dynamic> json) => _$SongFromJson(json);
+  Map<String, dynamic> toJson() => _$SongToJson(this);
 }

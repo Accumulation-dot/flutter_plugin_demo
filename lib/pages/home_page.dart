@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<FrameItem> dataSource = [
     FrameItem('url_lanucher', 'https://pub.dev/packages/url_launcher', KeyUtil.url_launcher_example),
+    FrameItem('net_json_cached', 'https://pub.dev/packages/cached_network_image', KeyUtil.net_json_example),
   ];
 
   RefreshController _refreshController =

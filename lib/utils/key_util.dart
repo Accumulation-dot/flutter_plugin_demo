@@ -9,5 +9,8 @@ class KeyUtil {
   static const home_page = "/home_page";
 
   /// url_launcher demo
-  static const url_launcher_example = "url_launcher_example";
+  static const url_launcher_example = "/url_launcher_example";
+
+  /// net json
+  static const net_json_example = "/net_json_example";
 }
