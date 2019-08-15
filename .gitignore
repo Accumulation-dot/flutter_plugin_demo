@@ -7,6 +7,8 @@
 build/
 .history/
 ios/Pods/
+ios/Flutter/
+android/.gradle/
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
 
@@ -15,3 +17,4 @@ pubspec.lock
 doc/api/
 ios/Podfile.lock
 ios/Pods/Manifest.lock
+ios/Flutter/App.framework/flutter_assets/kernel_blob.bin

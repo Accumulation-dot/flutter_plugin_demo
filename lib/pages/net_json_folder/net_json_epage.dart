@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_plugin_demo/models/net_json_folder/net_result.dart';
 import 'package:flutter_plugin_demo/models/net_json_folder/song_rank.dart';
 import 'package:flutter_plugin_demo/utils/net_util.dart';
+import 'package:flutter_plugin_demo/view/grid_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NetJsonEPage extends StatefulWidget {
@@ -23,47 +24,57 @@ Widget songRankWidget(BuildContext context, SongRank songRank) {
   );
 }
 
-Widget _showGridViewItem(BuildContext context,String title,int count) {
-    return InkWell(//用inkWell是为了添加点击事件
-      onTap: (){
-        Scaffold.of(context).showSnackBar(
-            SnackBar(content: Text('$count')));
-      },
-      child: new Container(
-        //给个0.5宽的边框
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.grey,
-            width: 0.5,
-          ),
-        ),
-        child: new Column(
-          children: <Widget>[
-            //一个图标
-            new Container(
-              padding: EdgeInsets.only(top: 20),
-              child: new Icon(
-                Icons.account_circle,
-                size: 80,
-              ),
-            ),
-            //一个文本
-            new Container(
-              padding: EdgeInsets.only(top: 10),
-              child: new Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ],
+Widget _showGridViewItem(BuildContext context, SongRank songRank) {
+  return InkWell(
+    //用inkWell是为了添加点击事件
+    onTap: () {
+      Scaffold.of(context)
+          .showSnackBar(SnackBar(content: Text('${songRank.count}')));
+    },
+    child: new Container(
+      //给个0.5宽的边框
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey,
+          width: 0.5,
         ),
       ),
-    );
+      child: new Row(
+        children: <Widget>[
+          //一个图标
+          AspectRatio(
+              aspectRatio: 3,
+              child: CachedNetworkImage(
+                width: double.infinity,
+                fit: BoxFit.fill,
+                imageUrl: songRank.pic_s210,
+                placeholder: (context, url) => Center(
+                  child: new CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => new Icon(Icons.error),
+              ),
+            ),
+          // new Icon(
+          //   Icons.account_circle,
+          //   size: 80,
+          // ),
+          // ),
+          //一个文本
+          new Container(
+            padding: EdgeInsets.only(top: 10),
+            child: new Text(
+              songRank.name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
-
 
 class _NetJsonEPageState extends State<NetJsonEPage> {
   List<SongRank> dataSource = List();
@@ -75,6 +86,7 @@ class _NetJsonEPageState extends State<NetJsonEPage> {
     await NetUtil()
         .requestUrl('https://api.apiopen.top/', 'musicRankings')
         .then((respond) {
+      print("${respond.data}");
       try {
         var map = respond.data as Map;
         var result = NetResult.fromJson(map);
@@ -106,22 +118,29 @@ class _NetJsonEPageState extends State<NetJsonEPage> {
         controller: _refreshController,
         enablePullDown: true,
         enablePullUp: false,
-        child: GridView.builder(
-          primary: false,
-          padding: EdgeInsets.all(0),
-          itemCount: this.dataSource.length,
+        child:
+            // ListView.builder(
+            //   itemCount: dataSource.length,
+            //   itemBuilder: (context, index) =>
+            //       songRankWidget(context, this.dataSource[index]),
+            // ),
+            GridView.builder(
+          itemCount: dataSource.length,
+          gridDelegate:
+              fixedCrossAxisCount(crossAxisCount: 1, childAspectRatio: 2.0),
           itemBuilder: (BuildContext context, int index) {
-            SongRank songRank = dataSource[index];
-            return CachedNetworkImage(
-              imageUrl: songRank.pic_s192,
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            );
+            return _showGridViewItem(context, this.dataSource[index]);
           },
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
         ),
         onRefresh: this._onRefresh,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 }
 // ListView.separated(
